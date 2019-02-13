@@ -1,11 +1,16 @@
 module.exports = `
   type User {
-    id: Int!
+    id: ID!
     username: String!
+    email: String!
+    googleId: String
+    imageUrl: String
+    createOn: String
+    videos: [String]
   }
-  
+
   type Query {
-    getUser(userId: Int!): User
+    getUser(userId: ID!): User
     allUsers: [User!]!
   }
 `;

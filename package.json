@@ -10,10 +10,14 @@
     "start": "nodemon ./server.js"
   },
   "dependencies": {
-    "apollo-server": "^2.4.0",
+    "apollo-server-express": "^2.4.0",
     "dotenv": "^6.2.0",
+    "express": "^4.16.4",
     "graphql": "^14.1.1",
-    "merge-graphql-schemas": "^1.5.8"
+    "merge-graphql-schemas": "^1.5.8",
+    "mongoose": "^5.4.11",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0"
   },
   "devDependencies": {
     "apollo": "^2.5.0",
