@@ -17,7 +17,7 @@ const server = new ApolloServer({
   }
 });
 
-const app = express();  
+const app = express();
 
 passport.use(googleOauth);
 app.use(passport.initialize());
