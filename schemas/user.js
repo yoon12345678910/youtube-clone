@@ -6,7 +6,7 @@ module.exports = `
     googleId: String
     imageUrl: String
     createOn: String
-    videos: [String]
+    videos: [Video]
   }
 
   type Query {
