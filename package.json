@@ -7,7 +7,9 @@
   "author": "Jongik Yoon <yji1221@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "client": "npm run start --prefix client",
+    "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
     "apollo-server-express": "^2.4.0",

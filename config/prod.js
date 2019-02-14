@@ -1,6 +1,5 @@
 module.exports = {
   port: process.env.PORT,
-  // baseURI: process.env.baseURI,
   mlabURI: process.env.MLAB_URI,
   googleClientId: process.env.GOOGLE_CLIENT_ID,
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,

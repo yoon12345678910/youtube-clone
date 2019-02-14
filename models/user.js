@@ -17,7 +17,7 @@ const userSchema = new Schema({
     },
     password: String,
     imageUrl: String,
-    videos: [Schema.Types.ObjectId],
+    videos: [String],
     createOn: {
       type: Date,
       default: Date.now()

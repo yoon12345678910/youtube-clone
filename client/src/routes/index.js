@@ -18,6 +18,12 @@ import VideoCallIcon from '@material-ui/icons/VideoCall';
 import AddAlertIcon from '@material-ui/icons/AddAlert';
 import HomeIcon from '@material-ui/icons/Home';
 import Avatar from '@material-ui/core/Avatar';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
 
 import Home from './Home';
 import Upload from './Upload';
@@ -54,10 +60,12 @@ const styles = theme => ({
     width: '20vw'
   },
   link: {
-    textDecoration: 'none'
+    textDecoration: 'none',
+    color: theme.palette.text.primary
   },
   linkIcon: {
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    cursor: 'pointer'
   },
   menuButton: {
     marginLeft: 12,
@@ -103,21 +111,30 @@ const styles = theme => ({
 
 class PersistentDrawer extends Component {
   state = {
-    open: false
+    drawerOpen: false,
+    menuOpen: false
   }
 
   handleDrawerToggle = () => {
-    this.setState({ open: !this.state.open });
-  }
+    this.setState({ drawerOpen: !this.state.drawerOpen });
+  };
 
-  handleDrawerClose = () => {
-    this.setState({ open: false });
-  }
+  handleMenuToggle  = () => {
+    this.setState({ menuOpen: !this.state.menuOpen });
+  };
+
+  handleMenuClose = e => {
+    if (document.getElementById('avatar').contains(e.target)) {
+      return;
+    }
+    this.setState({ menuOpen: false });
+  };
+
 
   render() {
     const { classes } = this.props;
-    const { open } = this.state;
-    console.log(Drawer);
+    const { drawerOpen, menuOpen } = this.state;
+    
     return (
       <BrowserRouter>
         <div className={classes.root}>
@@ -136,18 +153,44 @@ class PersistentDrawer extends Component {
                   </Link>
                   <AppsIcon/>
                   <AddAlertIcon/>
-                  <Avatar src='http://via.placeholder.com/50x50' />
+                  <Avatar
+                    id='avatar'
+                    aria-owns={menuOpen ? 'menu-list-grow' : undefined}
+                    src='http://via.placeholder.com/50x50' 
+                    onClick={this.handleMenuToggle}
+                    className={classes.linkIcon}/>
+                  <Popper open={menuOpen} anchorEl={document.getElementById('avatar')} transition disablePortal>
+                    {({ TransitionProps, placement }) => (
+                      <Grow
+                        {...TransitionProps}
+                        id='menu-list-grow'
+                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                      >
+                        <Paper>
+                          <ClickAwayListener onClickAway={this.handleMenuClose}>
+                            <MenuList>
+                              <MenuItem>
+                                <a href='http://localhost:4000/auth/google' className={classes.link}>Sign In with Google</a>
+                              </MenuItem>
+                              <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
+                              <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+                              <MenuItem onClick={this.handleMenuClose}>Logout</MenuItem>
+                            </MenuList>
+                          </ClickAwayListener>
+                        </Paper>
+                      </Grow>
+                    )}
+                  </Popper>
                 </div>
               </Toolbar>
             </AppBar>
             <Drawer
-              // type='persistent'
               className={classes.drawer}
               variant="persistent"
               anchor="left"
               transitionDuration={0}
               classes={{ paper: classes.drawerPaper }}
-              open={open}>
+              open={drawerOpen}>
               <div className={classes.drawerHeader}>
                 <IconButton>
                   <ChevronLeftIcon />
@@ -167,7 +210,7 @@ class PersistentDrawer extends Component {
               <List className={classes.list}></List>
             </Drawer>
             <main className={classNames(classes.content, {
-              [classes.contentShift]: open})}>
+              [classes.contentShift]: drawerOpen})}>
               <Switch>
                 <Route exact path='/' component={Home}/>
                 <Route path='/upload' component={Upload}/>

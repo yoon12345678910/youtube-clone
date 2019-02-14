@@ -32,7 +32,6 @@ const styles = {
 
 class Upload extends Component {
   onDrop = (acceptedFiles, rejectedFiles) => {
-    console.log(acceptedFiles, rejectedFiles)
   }
 
   render(){
