@@ -9,13 +9,14 @@ import { ApolloProvider } from 'react-apollo';
 
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
+import 'typeface-roboto';
 import theme from './theme';
-import App from './App';
+import App from './routes';
 
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: `http://localhost:4000/graphql` }),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  link: new HttpLink({ uri: 'http://localhost:4000/graphql' })
 });
 
 ReactDOM.render(
