@@ -16,8 +16,12 @@ const userSchema = new Schema({
       unique: true
     },
     password: String,
+    jwt: String,
     imageUrl: String,
-    videos: [String],
+    videos: {
+      type: [Schema.Types.ObjectId],
+      ref: 'video'
+    },
     createOn: {
       type: Date,
       default: Date.now()

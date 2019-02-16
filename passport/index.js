@@ -1,7 +1,10 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
+const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const User = require('../models/user');
+
+let userId;
 
 const googleOauth = new GoogleStrategy(
   {
@@ -11,7 +14,7 @@ const googleOauth = new GoogleStrategy(
     passRequestToCallback: true
   },
   async (_, __, ___, profile, done) => {
-    const googleId = profile.id
+    const googleId = profile.id;
     const user = await User.findOne({ googleId });
     
     if(!user) {
@@ -21,8 +24,24 @@ const googleOauth = new GoogleStrategy(
         email: profile.emails[0].value,
         imageUrl: profile.photos[0].value
       });
-      await newUser.save();
+      const savedUser = await newUser.save();
+      userId = savedUser._id;
+      const token = jwt.sign({
+        id: userId
+      }, keys.jwtSecret, { expiresIn: '7d' });
+
+      savedUser.jwt = token;
+      await savedUser.save();
+      done(null, {});
     }
+    
+    userId = user._id;
+    const newToken = jwt.sign({
+      id: userId
+    }, keys.jwtSecret, { expiresIn: '7d' });
+
+    user.jwt = newToken;
+    await user.save();
     done(null, {});
   }
 );
@@ -40,8 +59,7 @@ const googleCallback = passport.authenticate('google', {
 });
 
 const googleRedirect = (_, res) => {
-  console.log('?')
-  res.redirect(`http://localhost:3000`);
+  res.redirect(`http://localhost:3000/user/${userId}`);
 };
 
 module.exports = {

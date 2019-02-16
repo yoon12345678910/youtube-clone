@@ -1,6 +1,11 @@
 module.exports = {
   Query: {
-    getUser: (_, { userId }, { models }) => models.User.findById(userId),
-    allUsers: (_, __, { models }) => models.User.find({})
+
+    getUserById: async (_, { userId }, { models }) => await models.User.findById(userId),
+
+    allUsers: async (_, __, { models }) => await models.User.find({}),
+
+    currentUser: async (_, { userId }, { models, user }) => await models.User.getUserById(user.id)
+    
   }
 }

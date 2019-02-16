@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import { PrivateRoute }  from '../utils';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -27,6 +28,7 @@ import Popper from '@material-ui/core/Popper';
 
 import Home from './Home';
 import Upload from './Upload';
+import UserLanding from './UserLanding';
 
 
 const drawerWidth = 240;
@@ -134,6 +136,7 @@ class PersistentDrawer extends Component {
   render() {
     const { classes } = this.props;
     const { drawerOpen, menuOpen } = this.state;
+    const avatarUrl = window.localStorage.getItem('avatar') || 'http://via.placeholder.com/50x50';
     
     return (
       <BrowserRouter>
@@ -156,7 +159,7 @@ class PersistentDrawer extends Component {
                   <Avatar
                     id='avatar'
                     aria-owns={menuOpen ? 'menu-list-grow' : undefined}
-                    src='http://via.placeholder.com/50x50' 
+                    src={avatarUrl}
                     onClick={this.handleMenuToggle}
                     className={classes.linkIcon}/>
                   <Popper open={menuOpen} anchorEl={document.getElementById('avatar')} transition disablePortal>
@@ -213,7 +216,8 @@ class PersistentDrawer extends Component {
               [classes.contentShift]: drawerOpen})}>
               <Switch>
                 <Route exact path='/' component={Home}/>
-                <Route path='/upload' component={Upload}/>
+                <PrivateRoute path='/upload' component={Upload}/>
+                <Route path='/user/:userId' component={UserLanding}/>
               </Switch>
             </main>
           </div>

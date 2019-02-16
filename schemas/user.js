@@ -7,10 +7,12 @@ module.exports = `
     imageUrl: String
     createOn: String
     videos: [String]
+    jwt: String
   }
 
   type Query {
-    getUser(userId: ID!): User
+    getUserById(userId: ID!): User
+    currentUser(userId: ID): User
     allUsers: [User!]!
   }
 `;

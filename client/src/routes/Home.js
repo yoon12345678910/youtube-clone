@@ -3,26 +3,13 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 
-const ALL_USERS = gql`
-  query {
-    allUsers {
-      id,
-      username,
-      email,
-      googleId,
-      imageUrl,
-      createOn,
-      videos
-    }
-  }
-`;
-
 const Home = () => {
   return (
     <Query query={ALL_USERS}>
-      {({  data: { allUsers }, loading, error }) => {
+      {({ data: { allUsers }, loading, error }) => {
         if (loading) return null;
         if (error) return <p>ERROR: {error.message}</p>;
+
         return (
           <div>
             {allUsers.map(u => (
@@ -40,5 +27,18 @@ const Home = () => {
   );
 };
 
+const ALL_USERS = gql`
+  query {
+    allUsers {
+      id
+      username
+      email
+      googleId
+      imageUrl
+      createOn
+      videos
+    }
+  }
+`;
 
 export default Home;
