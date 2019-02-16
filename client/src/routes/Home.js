@@ -33,10 +33,8 @@ const ALL_USERS = gql`
       id
       username
       email
-      googleId
       imageUrl
       createOn
-      videos
     }
   }
 `;

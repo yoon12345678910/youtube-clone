@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import { PrivateRoute }  from '../utils';
+
+import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -29,6 +30,7 @@ import Popper from '@material-ui/core/Popper';
 import Home from './Home';
 import Upload from './Upload';
 import UserLanding from './UserLanding';
+import Video from './Video';
 
 
 const drawerWidth = 240;
@@ -36,7 +38,7 @@ const drawerWidth = 240;
 const styles = theme => ({
   root: {
     width: '100%',
-    height: '100vh',
+    height: '100%',
     zIndex: 1,
     overflow: 'hidden'
   },
@@ -167,8 +169,7 @@ class PersistentDrawer extends Component {
                       <Grow
                         {...TransitionProps}
                         id='menu-list-grow'
-                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                      >
+                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}>
                         <Paper>
                           <ClickAwayListener onClickAway={this.handleMenuClose}>
                             <MenuList>
@@ -218,6 +219,7 @@ class PersistentDrawer extends Component {
                 <Route exact path='/' component={Home}/>
                 <PrivateRoute path='/upload' component={Upload}/>
                 <Route path='/user/:userId' component={UserLanding}/>
+                <Route path='/video/:videoId' component={Video}/>
               </Switch>
             </main>
           </div>

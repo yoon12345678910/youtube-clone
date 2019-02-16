@@ -22,6 +22,18 @@ const userSchema = new Schema({
       type: [Schema.Types.ObjectId],
       ref: 'video'
     },
+    likes: {
+      type: [Schema.Types.ObjectId],
+      ref: 'video'
+    },
+    dislikes: {
+      type: [Schema.Types.ObjectId],
+      ref: 'video'
+    },
+    subscriptions: {
+      type: [Schema.Types.ObjectId],
+      ref: 'user'
+    },
     createOn: {
       type: Date,
       default: Date.now()

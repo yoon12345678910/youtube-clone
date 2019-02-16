@@ -7,6 +7,9 @@ module.exports = `
     description: String!
     poster: String
     createdOn: String!
+    views: Int
+    likes: Int
+    dislikes: Int
   }
 
   input VideoInput {
@@ -21,8 +24,15 @@ module.exports = `
     videoUrl: String
   }
 
+  type Query {
+    getVideoById(videoId: ID!): Video
+  }
+
   type Mutation {
     s3Sign(filename: String!, filetype: String!): S3Payload
     createVideo(input: VideoInput): Video
+    addView(videoId: ID!): Video
+    addLike(videoId: ID!, remove: Boolean!): Video
+    addDislike(videoId: ID!, remove: Boolean!): Video
   }
 `;

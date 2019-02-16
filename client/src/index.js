@@ -6,13 +6,13 @@ import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import 'typeface-roboto';
 import theme from './theme';
 import App from './routes';
-import { Auth } from './utils';
 
 
 const cache = new InMemoryCache();
@@ -28,21 +28,19 @@ const client = new ApolloClient({
   }),
 });
 
-if (!!localStorage.getItem('token')) {
-  Auth.authenticate();
-}
-
-// cache.writeData({
-//   data: {
-//     isLoggedIn: !!localStorage.getItem('token'),
-//   },
-// });
+cache.writeData({
+  data: {
+    isLoggedIn: !!localStorage.getItem('token'),
+  },
+});
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <MuiThemeProvider theme={theme}>
-      <App />
-    </MuiThemeProvider>
+    <ApolloHooksProvider client={client}>
+      <MuiThemeProvider theme={theme}>
+        <App />
+      </MuiThemeProvider>
+    </ApolloHooksProvider>
   </ApolloProvider>,
   document.getElementById('root')
 );

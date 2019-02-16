@@ -6,13 +6,14 @@ module.exports = `
     googleId: String
     imageUrl: String
     createOn: String
-    videos: [String]
+    videos: [Video]
     jwt: String
+    likes: [ID!]
+    dislikes: [ID!]
   }
 
   type Query {
     getUserById(userId: ID!): User
-    currentUser(userId: ID): User
     allUsers: [User!]!
   }
 `;
