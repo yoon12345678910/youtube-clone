@@ -37,10 +37,11 @@ const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
+    overflow: 'hidden',
     width: '100%',
     height: '100%',
     zIndex: 1,
-    overflow: 'hidden'
+    color: '#444'
   },
   appFrame: {
     position: 'relative',
@@ -110,6 +111,16 @@ const styles = theme => ({
   contentShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: 0
+  },
+  contentInner: {
+    margin: '0 auto',
+    width: 'auto',
+    [theme.breakpoints.up('lg')]: {
+      width: '1003px'
+    },
+  },
+  contentRender: {
+    textAlign: 'center'
   }
 })
 
@@ -215,12 +226,16 @@ class PersistentDrawer extends Component {
             </Drawer>
             <main className={classNames(classes.content, {
               [classes.contentShift]: drawerOpen})}>
-              <Switch>
-                <Route exact path='/' component={Home}/>
-                <PrivateRoute path='/upload' component={Upload}/>
-                <Route path='/user/:userId' component={UserLanding}/>
-                <Route path='/video/:videoId' component={Video}/>
-              </Switch>
+              <div className={classNames(classes.contentInner)}>
+                <div className={classNames(classes.contentRender)}>
+                  <Switch>
+                    <Route exact path='/' component={Home}/>
+                    <PrivateRoute path='/upload' component={Upload}/>
+                    <Route path='/user/:userId' component={UserLanding}/>
+                    <Route path='/video/:videoId' component={Video}/>
+                  </Switch>
+                </div>
+              </div>
             </main>
           </div>
         </div>

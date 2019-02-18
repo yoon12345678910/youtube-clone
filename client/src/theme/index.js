@@ -14,6 +14,7 @@ export default createMuiTheme({
       default: '#121212'
     },
     text: {
+      main: '#444',
       primary: '#DDDDDD',
       secondary: '#707070',
       disabled: '#DDDDDD'
@@ -52,7 +53,12 @@ export default createMuiTheme({
       animated: {
         color: '#DDDDDD'
       }
-    }
+    },
+    // MuiTypography: {
+    //   root: {
+    //     color: '#444',
+    //   }
+    // }
   },
   typography: {
     useNextVariants: true,

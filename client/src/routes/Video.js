@@ -1,15 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
+
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
+import ReplyIcon from '@material-ui/icons/Reply';
+import Snackbar from '@material-ui/core/Snackbar';
 import ThumbsUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbsDownIcon from '@material-ui/icons/ThumbDown';
-import ReplyIcon from '@material-ui/icons/Reply';
+import CloseIcon from '@material-ui/icons/Close';
+
 import { timeDifferenceForDate } from '../utils';
+import ShareModal from '../components/ShareModal';
+import EmbedModal from '../components/EmbedModal';
 
 
 const styles = {
@@ -51,8 +57,16 @@ const styles = {
 
 class Video extends Component {
 
+  state = {
+    shareDialogOpen: false,
+    copySnackbarOpen: false,
+    embedDialogOpen: false,
+    linkToShare: ''
+  }
+
   componentDidMount() {
     this.handleAddView();
+    this.setState({ linkToShare: `http://localhost:3000/video/${this.props.match.params.videoId}`})
   }
 
   handleAddView = async () => {
@@ -111,6 +125,29 @@ class Video extends Component {
     }
   }
 
+  handleCopy = (control) => {
+    this.setState({ copySnackbarOpen: true })
+    if(control === 'share'){
+      document.getElementById('link-text').select()
+      document.execCommand('Copy')
+    } else if(control === 'embed') {
+      document.getElementById('iframe-text').select()
+      document.execCommand('Copy')
+    }
+  }
+
+  handleShareModalOpen = () => this.setState({ shareDialogOpen: true })
+    
+  handleShareModalClose = () => this.setState({ shareDialogOpen: false })
+  
+  handleEmbedModalClose = () => this.setState({ embedDialogOpen: false })
+  
+  handleEmbedModalOpen = () => this.setState({ embedDialogOpen: true, shareDialogOpen: false })
+  
+  handleCopySnackbarOpen = () => this.setState({ copySnackbarOpen: true })
+  
+  handleCopySnackbarClose = () => this.setState({ copySnackbarOpen: false })
+  
   render() {
     const { data: { getVideoById, loading, error } } = this.props;
 
@@ -121,7 +158,7 @@ class Video extends Component {
       title,
       description,
       url,
-      poster,
+      posterUrl,
       createdOn,
       views,
       likes,
@@ -134,47 +171,74 @@ class Video extends Component {
     } = getVideoById;
 
     return (
-      <div style={styles.CONTAINER}>
-        <div>
-          <video src={url} controls style={styles.VIDEO} />
-          <Typography type='headline'>{title}</Typography>
-          <div style={styles.VIDEO_STATS}>
-            <div>
-              <Typography type='subheading' style={styles.VIEWS}>{views} views</Typography>
+      <Fragment>
+        <div style={styles.CONTAINER}>
+          <div>
+            <video src={url} controls style={styles.VIDEO} />
+            <Typography type='headline'>{title}</Typography>
+            <div style={styles.VIDEO_STATS}>
+              <div>
+                <Typography type='subheading' style={styles.VIEWS}>{views} views</Typography>
+              </div>
+              <div>
+                <IconButton style={styles.SPACER} onClick={this.handleThumbs.bind(this, 'like')}>
+                  <ThumbsUpIcon />&nbsp;
+                  <Typography type='button'>{likes}</Typography>
+                </IconButton>
+                <IconButton style={styles.SPACER} onClick={this.handleThumbs.bind(this, 'dislike')}>
+                  <ThumbsDownIcon />&nbsp;
+                  <Typography type='button'>{dislikes}</Typography>
+                </IconButton>
+                <IconButton style={styles.SPACER} onClick={this.handleShareModalOpen}>
+                  <ReplyIcon />
+                  <Typography type='button'>Share</Typography>
+                </IconButton>
+              </div>
             </div>
-            <div>
-              <IconButton style={styles.SPACER} onClick={this.handleThumbs.bind(this, 'like')}>
-                <ThumbsUpIcon />&nbsp;
-                <Typography type='button'>{likes}</Typography>
-              </IconButton>
-              <IconButton style={styles.SPACER} onClick={this.handleThumbs.bind(this, 'dislike')}>
-                <ThumbsDownIcon />&nbsp;
-                <Typography type='button'>{dislikes}</Typography>
-              </IconButton>
-              <IconButton style={styles.SPACER}>
-                <ReplyIcon />
-                <Typography type='button'>Share</Typography>
-              </IconButton>
+            <Divider />
+            <div style={styles.VIDEO_INFO}>
+              <Avatar src={imageUrl} alt='user' style={styles.AVATAR} />
+              <div>
+                <Typography type='title'>{username}</Typography>
+                <Typography>Posted {timeDifferenceForDate(createdOn)}</Typography>
+                <br />
+                <br />
+                <Typography>{description}</Typography>
+              </div>
+              <Button
+                style={styles.SUB_BUTTON}>
+                Subscribe
+              </Button>
             </div>
+            <Divider />
           </div>
-          <Divider />
-          <div style={styles.VIDEO_INFO}>
-            <Avatar src={imageUrl} alt='user' style={styles.AVATAR} />
-            <div>
-              <Typography type='title'>{username}</Typography>
-              <Typography>Posted {timeDifferenceForDate(createdOn)}</Typography>
-              <br />
-              <br />
-              <Typography>{description}</Typography>
-            </div>
-            <Button
-              style={styles.SUB_BUTTON}>
-              Subscribe
-            </Button>
-          </div>
-          <Divider />
         </div>
-      </div>
+        <ShareModal     
+          key='video-share-modal'
+          title={title}
+          open={this.state.shareDialogOpen}
+          handleShareModalClose={this.handleShareModalClose}
+          handleEmbedModalOpen={this.handleEmbedModalOpen}
+          linkToShare={this.state.linkToShare}
+          onCopy={this.handleCopy.bind(this, 'share')}
+        />
+        <Snackbar
+          key='video-copy-snackbar'
+          open={this.state.copySnackbarOpen}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          autoHideDuration={8000}
+          onClose={this.handleCopySnackbarClose}
+          message={<span>Video link copied to clipboard</span>}
+          action={<IconButton onClick={this.handleCopySnackbarClose} color='inherit'><CloseIcon/></IconButton>}
+        />
+        <EmbedModal
+          key='video-embed-modal'
+          open={this.state.embedDialogOpen}
+          handleEmbedModalClose={this.handleEmbedModalClose}
+          url={url}
+          onCopy={this.handleCopy.bind(this, 'embed')}
+        />
+      </Fragment>
     );
   }
 };
@@ -185,7 +249,7 @@ const VIDEO_BY_ID = gql`
       title
       description
       url
-      poster
+      posterUrl
       views
       likes
       dislikes

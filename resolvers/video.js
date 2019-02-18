@@ -26,17 +26,17 @@ module.exports = {
         ACL: 'public-read'
       };
       const requestUrl = await s3.getSignedUrl('putObject', s3Params);
-      const videoUrl = `https://${s3Bucket}.s3.amazonaws.com/${filename}`;
-      return { requestUrl, videoUrl };
+      const s3BucketUrl = `https://${s3Bucket}.s3.amazonaws.com/${filename}`;
+      return { requestUrl, s3BucketUrl };
     },
 
     createVideo: async (_, { input }, { models, user: { id } }) => {
-      const { title, description, poster, url } = input;
+      const { title, description, url, posterUrl } = input;
       const video = new models.Video({
         owner: id,
         title,
         description,
-        poster,
+        posterUrl,
         url
       });
       const savedVideo = await video.save();

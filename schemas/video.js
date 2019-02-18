@@ -5,7 +5,7 @@ module.exports = `
     title: String!
     url: String!
     description: String!
-    poster: String
+    posterUrl: String!
     createdOn: String!
     views: Int
     likes: Int
@@ -15,13 +15,13 @@ module.exports = `
   input VideoInput {
     title: String
     description: String
-    poster: String
+    posterUrl: String
     url: String
   }
 
   type S3Payload {
     requestUrl: String
-    videoUrl: String
+    s3BucketUrl: String
   }
 
   type Query {

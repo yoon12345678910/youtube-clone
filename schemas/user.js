@@ -3,13 +3,13 @@ module.exports = `
     id: ID!
     username: String!
     email: String!
-    googleId: String
     imageUrl: String
-    createOn: String
-    videos: [Video]
     jwt: String
+    googleId: String
+    videos: [Video]
     likes: [ID!]
     dislikes: [ID!]
+    createOn: String
   }
 
   type Query {
