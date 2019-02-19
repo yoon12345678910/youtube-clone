@@ -51,26 +51,25 @@ class Video extends Component {
 
     this.ThumbsTimer = setTimeout( async () => {
       const { videoId } = this.props.match.params;
-      console.log('videoId', videoId)
 
-    if (control === 'like') {
-      await this.props.addLike({
-        variables: { videoId },
-        refetchQueries: [{
-          query: VIDEO_BY_ID,
-          variables: { videoId }
-        }]
-      });
-    } else if (control === 'dislike') {
-      await this.props.addDislike({
-        variables: { videoId },
-        refetchQueries: [{
-          query: VIDEO_BY_ID,
-          variables: { videoId }
-        }]
-      });
-    }
-    }, 500);
+      if (control === 'like') {
+        await this.props.addLike({
+          variables: { videoId },
+          refetchQueries: [{
+            query: VIDEO_BY_ID,
+            variables: { videoId }
+          }]
+        });
+      } else if (control === 'dislike') {
+        await this.props.addDislike({
+          variables: { videoId },
+          refetchQueries: [{
+            query: VIDEO_BY_ID,
+            variables: { videoId }
+          }]
+        });
+      }
+    }, 300);
   }
 
   handleCopy = () => this.setState({ copySnackbarOpen: true })
