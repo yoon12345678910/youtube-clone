@@ -1,31 +1,29 @@
-import React from 'react';
+import React, { Component } from 'react';
 import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 
-const Home = () => {
-  return (
-    <Query query={ALL_USERS}>
-      {({ data: { allUsers }, loading, error }) => {
-        if (loading) return null;
-        if (error) return <p>ERROR: {error.message}</p>;
+class Home extends Component {
+  render () {
+    const { data: { allUsers, loading, error } } = this.props;
 
-        return (
-          <div>
-            {allUsers.map(u => (
-              <div key={u.id}>
-                <h3>{u.username}</h3>
-                <h3>{u.email}</h3>
-                <h3>{u.createdOn}</h3>
-                <img src={u.imageUrl} alt={'userimage'} />
-              </div>
-            ))}
+    if (loading) return null;
+    if (error) return <p>ERROR: {error.message}</p>;
+    
+    return (
+      <div>
+        {allUsers.map(u => (
+          <div key={u.id}>
+            <h3>{u.username}</h3>
+            <h3>{u.email}</h3>
+            <h3>{u.createdOn}</h3>
+            <img src={u.imageUrl} alt={'userimage'} />
           </div>
-        );
-      }}
-    </Query>
-  );
-};
+        ))}
+      </div>
+    );
+  }
+}
 
 const ALL_USERS = gql`
   query {
@@ -34,9 +32,9 @@ const ALL_USERS = gql`
       username
       email
       imageUrl
-      createOn
+      createdOn
     }
   }
 `;
 
-export default Home;
+export default graphql(ALL_USERS)(Home);

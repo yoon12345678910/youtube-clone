@@ -53,22 +53,46 @@ module.exports = {
       return await models.Video.findOneAndUpdate(filter, update);
     },
     
-    addLike: async (_, { videoId, remove }, { models, user}) => {
-      const filter_1 = { _id: user.id };
-      const update_1 = remove ? { $pull: { likes: videoId } } : { $push: { likes: videoId } };
-      await models.User.findOneAndUpdate(filter_1, update_1);
-      const filter_2 = { _id: videoId };
-      const update_2 = { $inc: { likes: remove ? -1 : 1 } };
-      return await models.Video.findOneAndUpdate(filter_2, update_2);
+    addLike: async (_, { videoId }, { models, user }) => {
+      const filterUser = { _id: user.id };
+      const filterVideo = { _id: videoId };
+      const userInfo = await models.User.findOne(filterUser);
+      const isLiked = userInfo.likes.find(i => i.toString() === videoId);
+      const isDisliked = userInfo.dislikes.find(i => i.toString() === videoId);
+      
+      if (isLiked) {
+        await models.User.findOneAndUpdate(filterUser, { $pull: { likes: videoId } });
+        return await models.Video.findOneAndUpdate(filterVideo, { $inc: { likes: -1 } });
+      } 
+      else if (isDisliked) {
+        await models.User.findOneAndUpdate(filterUser, { $push: { likes: videoId }, $pull: { dislikes: videoId } });
+        return await models.Video.findOneAndUpdate(filterVideo, { $inc: { likes: 1, dislikes: -1 } });
+      } 
+      else {
+        await models.User.findOneAndUpdate(filterUser, { $push: { likes: videoId }});
+        return await models.Video.findOneAndUpdate(filterVideo, { $inc: { likes: 1 } });
+      }
     },
     
-    addDislike: async (_, { videoId, remove }, { models, user}) => {
-      const filter_1 = { _id: user.id };
-      const update_1 = remove ? { $pull: { dislikes: videoId } } : { $push: { dislikes: videoId } };
-      await models.User.findOneAndUpdate(filter_1, update_1);
-      const filter_2 = { _id: videoId };
-      const update_2 = { $inc: { dislikes: remove ? -1 : 1 } };
-      return await models.Video.findOneAndUpdate(filter_2, update_2);
+    addDislike: async (_, { videoId }, { models, user }) => {
+      const filterUser = { _id: user.id };
+      const filterVideo = { _id: videoId };
+      const userInfo = await models.User.findOne(filterUser);
+      const isLiked = userInfo.likes.find(i => i.toString() === videoId);
+      const isDisliked = userInfo.dislikes.find(i => i.toString() === videoId);
+      
+      if (isLiked) {
+        await models.User.findOneAndUpdate(filterUser, { $pull: { likes: videoId }, $push: { dislikes: videoId } });
+        return await models.Video.findOneAndUpdate(filterVideo, { $inc: { likes: -1, dislikes: 1 } });
+      } 
+      else if (isDisliked) {
+        await models.User.findOneAndUpdate(filterUser, { $pull: { dislikes: videoId } });
+        return await models.Video.findOneAndUpdate(filterVideo, { $inc: { dislikes: -1 } });
+      }
+      else {
+        await models.User.findOneAndUpdate(filterUser, { $push: { dislikes: videoId }});
+      return await models.Video.findOneAndUpdate(filterVideo, { $inc: { dislikes: 1 } });
+      }
     }
 
   }

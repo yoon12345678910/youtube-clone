@@ -9,7 +9,7 @@ module.exports = `
     videos: [Video]
     likes: [ID!]
     dislikes: [ID!]
-    createOn: String
+    createdOn: String
   }
 
   type Query {

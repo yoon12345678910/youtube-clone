@@ -32,7 +32,7 @@ module.exports = `
     s3Sign(filename: String!, filetype: String!): S3Payload
     createVideo(input: VideoInput): Video
     addView(videoId: ID!): Video
-    addLike(videoId: ID!, remove: Boolean!): Video
-    addDislike(videoId: ID!, remove: Boolean!): Video
+    addLike(videoId: ID!): Video
+    addDislike(videoId: ID!): Video
   }
 `;

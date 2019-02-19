@@ -61,6 +61,20 @@ class Upload extends Component {
     this.uploadToS3Video(video.requestUrl, file);
   }
 
+  handleCreateVideo = async () => {
+    const { title, description, url, posterUrl } = this.state;
+    const response = await this.props.createVideo({
+      variables: { input: { title, description, url, posterUrl } }
+    });
+
+    this.setState({
+      id: response.data.createVideo.id,
+      completed: true
+    });
+  }
+
+  handleChange = e => this.setState({ [e.target.name]: e.target.value })
+
   s3SignVideo = async (name, type) => {
     const response = await this.props.s3Sign({
       variables: { 
@@ -93,7 +107,7 @@ class Upload extends Component {
     });
     const { requestUrl, s3BucketUrl } = response.data.s3Sign;
 
-    return { requestUrl, s3BucketUrl }
+    return { requestUrl, s3BucketUrl };
   }
 
   uploadToS3Poster = (requestUrl, videoUrl) => {
@@ -112,20 +126,6 @@ class Upload extends Component {
     }, false);
   }
 
-  handleCreateVideo = async () => {
-    const { title, description, url, posterUrl } = this.state;
-    const response = await this.props.createVideo({
-      variables: { input: { title, description, url, posterUrl } }
-    });
-
-    this.setState({
-      id: response.data.createVideo.id,
-      completed: true
-    });
-  }
-
-  handleChange = e => this.setState({ [e.target.name]: e.target.value })
-
   render() {
     const {
       id,
@@ -137,15 +137,13 @@ class Upload extends Component {
       posterUrl
     } = this.state;
 
-    if (dropzone) {
-      return (
+    return (
+      dropzone ? 
         <UploadDropzone
           canvasRef={this.canvasRef}
           videoRef={this.videoRef}
-          onDrop={this.handleDrop}/>
-      );
-    } else {
-      return (
+          onDrop={this.handleDrop} />
+        :
         <UploadDetails
           id={id}
           progress={progress}
@@ -154,9 +152,8 @@ class Upload extends Component {
           description={description}
           posterUrl={posterUrl}
           onChange={this.handleChange}
-          onCreateVideo={this.handleCreateVideo}/>
-      );
-    }
+          onCreateVideo={this.handleCreateVideo} />
+    );
   }
 };
 

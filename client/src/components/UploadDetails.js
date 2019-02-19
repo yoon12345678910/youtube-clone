@@ -110,7 +110,7 @@ const UploadDetails = ({
             value={description}
             onChange={onChange}
             multiline={true}
-            rows={2}
+            rows={4}
             fullWidth
             margin='normal'/>
         </div>

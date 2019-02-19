@@ -62,7 +62,7 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingRight: '20px',
-    width: '20vw'
+    width: '13vw'
   },
   link: {
     textDecoration: 'none',
@@ -109,8 +109,8 @@ const styles = theme => ({
     marginLeft: -drawerWidth
   },
   contentShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: 0
+    // width: `calc(100% - ${drawerWidth}px)`,
+    // marginLeft: 0
   },
   contentInner: {
     margin: '0 auto',
@@ -201,9 +201,9 @@ class PersistentDrawer extends Component {
             </AppBar>
             <Drawer
               className={classes.drawer}
-              variant="persistent"
-              anchor="left"
-              transitionDuration={0}
+              variant='persistent'
+              anchor='left'
+              // transitionDuration={0}
               classes={{ paper: classes.drawerPaper }}
               open={drawerOpen}>
               <div className={classes.drawerHeader}>

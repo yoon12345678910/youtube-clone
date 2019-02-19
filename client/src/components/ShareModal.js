@@ -1,4 +1,8 @@
 import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,62 +21,99 @@ import {
   RedditIcon
 } from 'react-share';
 
-const styles = {
-  BUTTONS: {
-    display: 'flex'
-  },
-  DIVIDER: {
-    marginTop: '1vh',
-    marginBottom: '1vh'
-  },
-  LINK: {
-    cursor: 'pointer',
-    marginRight: '1vh'
-  }
+
+const link = () => `
+  cursor: pointer;
+  margin-right: 1vh;
+`;
+
+const DialogContentButtons = styled.div`
+  display: flex;
+`;
+
+const DividerStyled = styled(Divider)`
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+`;
+
+const FacebookShareButtonStyled = styled(FacebookShareButton)`
+  ${link};
+`;
+
+const TwitterShareButtonStyled = styled(TwitterShareButton)`
+  ${link};
+`;
+
+const GooglePlusShareButtonStyled = styled(GooglePlusShareButton)`
+  ${link};
+`;
+
+const RedditShareButtonStyled = styled(RedditShareButton)`
+  ${link};
+`;
+
+ const ShareModal = ({
+  linkToShare,
+  title,
+  open, 
+  onCopy, 
+  onEmbedModalOpen,
+  onShareModalClose 
+}) => {
+  return (
+    <Dialog
+      open={open}
+      onClose={onShareModalClose}
+      fullWidth>
+      <DialogTitle>Share</DialogTitle>
+      <DialogContent>
+        <DialogContentButtons>
+          <FacebookShareButtonStyled url={linkToShare}>
+            <FacebookIcon />
+          </FacebookShareButtonStyled>
+          <TwitterShareButtonStyled url={linkToShare} title={title}>
+            <TwitterIcon />
+          </TwitterShareButtonStyled>
+          <GooglePlusShareButtonStyled url={linkToShare}>
+            <GooglePlusIcon />
+          </GooglePlusShareButtonStyled>
+          <RedditShareButtonStyled url={linkToShare} title={title}>
+            <RedditIcon />
+          </RedditShareButtonStyled>
+        </DialogContentButtons>
+        <DividerStyled />
+        <TextField
+          disabled={true}
+          value={linkToShare}
+          fullWidth />
+        <DividerStyled />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onEmbedModalOpen}>Embed</Button>
+        <CopyToClipboard text={linkToShare} onCopy={onCopy}>
+          <Button>Copy</Button>
+        </CopyToClipboard>
+      </DialogActions>
+    </Dialog>
+  );
 }
 
-export default ({ 
-  open, 
-  handleShareModalClose, 
-  linkToShare, 
-  onChange, 
-  onCopy, 
-  title,
-  handleEmbedModalOpen
-}) => (
-  <Dialog
-    open={open}
-    onClose={handleShareModalClose}
-    fullWidth
-  >
-    <DialogTitle>Share</DialogTitle>
-    <DialogContent>
-      <div style={styles.BUTTONS}>
-        <FacebookShareButton url={linkToShare} style={styles.LINK}>
-          <FacebookIcon />
-        </FacebookShareButton>
-        <TwitterShareButton url={linkToShare} title={title} style={styles.LINK}>
-          <TwitterIcon />
-        </TwitterShareButton>
-        <GooglePlusShareButton url={linkToShare} style={styles.LINK}>
-          <GooglePlusIcon />
-        </GooglePlusShareButton>
-        <RedditShareButton url={linkToShare} title={title} style={styles.LINK}>
-          <RedditIcon />
-        </RedditShareButton>
-      </div>
-      <Divider style={styles.DIVIDER} />
-      <TextField
-        id='link-text'
-        disabled={true}
-        value={linkToShare}
-        fullWidth
-      />
-      <Divider style={styles.DIVIDER} />
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={handleEmbedModalOpen}>Embed</Button>
-      <Button onClick={onCopy}>Copy</Button>
-    </DialogActions>
-  </Dialog>
-)
+ShareModal.defaultProps = {
+  linkToShare: '',
+  title: '',
+  open: false,
+  onCopy: () => console.warn('onCopy not defined'),
+  onEmbedModalOpen: () => console.warn('onEmbedModalOpen not defined'),
+  onShareModalClose: () => console.warn('onShareModalClose not defined')
+}
+
+ShareModal.propTypes = {
+  linkToShare: PropTypes.string,
+  title: PropTypes.string,
+  onOpen: PropTypes.bool,
+  onCopy: PropTypes.func,
+  onEmbedModalOpen: PropTypes.func,
+  onShareModalClose: PropTypes.func
+}
+
+export default ShareModal;
