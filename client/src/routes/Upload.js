@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import axios from 'axios';
-import moment from 'moment';
 
 import UploadDropzone from '../components/UploadDropzone';
 import UploadDetails from '../components/UploadDetails';
+import { formatFilename } from '../utils';
 
 
 class Upload extends Component {
@@ -31,21 +31,13 @@ class Upload extends Component {
     this.handleCreateVideo = this.handleCreateVideo.bind(this);
   }
 
-  format = name => {
-    const date = moment().format('M-DD-YYYY');
-    const cleanFilename = name
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '-');
-    return `${date}-${cleanFilename}`;
-  }
-
   handleDrop = acceptedFiles => {
     const file = acceptedFiles[0];
     this.handleUpload(file);
   }
 
   handleUpload = async file => {
-    const filename = this.format(file.name);
+    const filename = formatFilename(file.name);
     const video = await this.s3SignVideo(filename, file.type);
     const poster = await this.s3SignPoster(filename);
 
@@ -76,14 +68,13 @@ class Upload extends Component {
   handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
   s3SignVideo = async (name, type) => {
-    const response = await this.props.s3Sign({
+    const response = await this.props.s3SignVideo({
       variables: { 
         filename: `videos/${name}`,
         filetype: type
       }
     });
-    const { requestUrl, s3BucketUrl } = response.data.s3Sign;
-
+    const { requestUrl, s3BucketUrl } = response.data.s3SignVideo;
     return { requestUrl, s3BucketUrl };
   }
 
@@ -95,18 +86,16 @@ class Upload extends Component {
         this.setState({ progress: percentCompleted });
       }
     };
-
     axios.put(requestUrl, file, options);
   }
 
   s3SignPoster = async (name) => {
-    const response = await this.props.s3Sign({
+    const response = await this.props.s3SignVideo({
       variables: { 
         filename: `images/${name}`,
         filetype: 'image/png' }
     });
-    const { requestUrl, s3BucketUrl } = response.data.s3Sign;
-
+    const { requestUrl, s3BucketUrl } = response.data.s3SignVideo;
     return { requestUrl, s3BucketUrl };
   }
 
@@ -157,9 +146,9 @@ class Upload extends Component {
   }
 };
 
-const S3_SIGN = gql`
+const S3_SIGN_VIDEO = gql`
   mutation ($filename: String!, $filetype: String!) {
-    s3Sign(filename: $filename, filetype: $filetype) {
+    s3SignVideo(filename: $filename, filetype: $filetype) {
       requestUrl
       s3BucketUrl
     }
@@ -175,6 +164,6 @@ const CREATE_VIDEO = gql`
 `;
 
 export default compose(
-  graphql(S3_SIGN, { name: 's3Sign' }),
+  graphql(S3_SIGN_VIDEO, { name: 's3SignVideo' }),
   graphql(CREATE_VIDEO, { name: 'createVideo' })
 )(Upload);

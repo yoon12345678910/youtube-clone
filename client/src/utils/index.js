@@ -11,7 +11,6 @@ const IS_LOGGED_IN = gql`
   }
 `;
 
-
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Query query={IS_LOGGED_IN}>
     {({ data }) => (
@@ -27,7 +26,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
       )}/>
     )}
   </Query>
-)
+);
 
 function timeDifference(current, previous) {
   const milliSecondsPerMinute = 60 * 1000;
@@ -65,13 +64,13 @@ function timeDifference(current, previous) {
     if (d === 1) return d + ' year ago';
     return d + ' years ago';
   }
-}
+};
 
 export function timeDifferenceForDate(date) {
   const now = new Date().getTime();
   const updated = new Date(parseInt(date)).getTime();
   return timeDifference(now, updated);
-}
+};
 
 export const reverseFormat = string => {
   const array = string.split(':');
@@ -84,14 +83,14 @@ export const reverseFormat = string => {
   }
   if (array.length === 2)
     return parseInt(array[0], 10) * 60 + parseInt(array[1], 10);
-}
+};
 
 export const formatTime = secs => {
   const formatted = moment.utc(secs * 1000).format('H:mm:ss');
   if (secs < 600) return formatted.slice(3);
   if (secs < 3600) return formatted.slice(2);
   return formatted;
-}
+};
 
 export const setNewVideoTag = date => {
   //const createdOn = moment(date)
@@ -100,4 +99,12 @@ export const setNewVideoTag = date => {
     .utc()
     .valueOf()
   return date > testDate;
-}
+};
+
+export const formatFilename = name => {
+  const date = moment().format('M-DD-YYYY');
+  const cleanFilename = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-');
+  return `${date}-${cleanFilename}`;
+};

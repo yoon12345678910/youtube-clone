@@ -18,7 +18,7 @@ module.exports = {
   },
   Mutation: {
 
-    s3Sign: async (_, { filename, filetype }, __) => {
+    s3SignVideo: async (_, { filename, filetype }, __) => {
       const s3 = new aws.S3({
         signatureVersion: 'v4',
         region: 'ap-northeast-2'

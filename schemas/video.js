@@ -13,6 +13,11 @@ module.exports = `
     comments: [Comment]
   }
 
+  type S3Payload {
+    requestUrl: String
+    s3BucketUrl: String
+  }
+
   input VideoInput {
     title: String
     description: String
@@ -20,17 +25,12 @@ module.exports = `
     url: String
   }
 
-  type S3Payload {
-    requestUrl: String
-    s3BucketUrl: String
-  }
-
   type Query {
     getVideoById(videoId: ID!): Video
   }
 
   type Mutation {
-    s3Sign(filename: String!, filetype: String!): S3Payload
+    s3SignVideo(filename: String!, filetype: String!): S3Payload
     createVideo(input: VideoInput): Video
     addView(videoId: ID!): Video
     addLike(videoId: ID!): Video

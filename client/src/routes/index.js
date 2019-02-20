@@ -13,12 +13,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import AppsIcon from '@material-ui/icons/Apps';
-import VideoCallIcon from '@material-ui/icons/VideoCall';
-import AddAlertIcon from '@material-ui/icons/AddAlert';
-import HomeIcon from '@material-ui/icons/Home';
 import Avatar from '@material-ui/core/Avatar';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
@@ -26,11 +20,20 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import AppsIcon from '@material-ui/icons/Apps';
+import VideoCallIcon from '@material-ui/icons/VideoCall';
+import AddAlertIcon from '@material-ui/icons/AddAlert';
+import HomeIcon from '@material-ui/icons/Home';
+import SignInIcon from '@material-ui/icons/ExitToApp';
+import AccountIcon from '@material-ui/icons/AccountBox';
 
 import Home from './Home';
 import Upload from './Upload';
 import UserLanding from './UserLanding';
 import Video from './Video';
+import Channel from './Channel';
 
 
 const drawerWidth = 240;
@@ -185,11 +188,13 @@ class PersistentDrawer extends Component {
                           <ClickAwayListener onClickAway={this.handleMenuClose}>
                             <MenuList>
                               <MenuItem>
+                                <ListItemIcon><SignInIcon/></ListItemIcon>
                                 <a href='http://localhost:4000/auth/google' className={classes.link}>Sign In with Google</a>
                               </MenuItem>
-                              <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
-                              <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
-                              <MenuItem onClick={this.handleMenuClose}>Logout</MenuItem>
+                              <MenuItem onClick={this.handleMenuClose}>
+                                <ListItemIcon><AccountIcon/></ListItemIcon>
+                                <Link to='/channel' className={classes.link}>My Channel</Link>
+                              </MenuItem>
                             </MenuList>
                           </ClickAwayListener>
                         </Paper>
@@ -231,6 +236,7 @@ class PersistentDrawer extends Component {
                   <Switch>
                     <Route exact path='/' component={Home}/>
                     <PrivateRoute path='/upload' component={Upload}/>
+                    <Route path='/channel' component={Channel}/>
                     <Route path='/user/:userId' component={UserLanding}/>
                     <Route path='/video/:videoId' component={Video}/>
                   </Switch>
