@@ -17,8 +17,8 @@ const Wrapper = styled.div`
 
 const AvatarStyled = styled(Avatar)`
   && {
-    width: 8vh;
-    height: 8vh;
+    width: 55px;
+    height: 55px;
   }
 `;
 

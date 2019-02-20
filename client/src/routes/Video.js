@@ -124,7 +124,6 @@ class Video extends Component {
   }
 
   handleCreateSubComment = async (commentId) => {
-    console.log('commentId', commentId);
     const text = this.state.subComment;
     const reply = false;
     const { videoId } = this.props.match.params;
@@ -169,7 +168,7 @@ class Video extends Component {
       subComment,
       visibleReplyInput
     } = this.state;
-    console.log('comments', comments);
+
     return (
       <Fragment>
         <VideoMain
@@ -310,7 +309,7 @@ const CREATE_COMMENT = gql`
       id
     }
   }
-`
+`;
 
 const CREATE_SUBCOMMENT = gql`
   mutation ($text: String!, $reply: Boolean!, $commentId: ID!) {
@@ -318,7 +317,7 @@ const CREATE_SUBCOMMENT = gql`
       id
     }
   }
-`
+`;
 
 
 export default compose(

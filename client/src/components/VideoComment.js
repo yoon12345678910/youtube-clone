@@ -81,7 +81,7 @@ const VideoComment = ({
   return (
     <Fragment>
       <InputCommentRow>
-        <Typography variant='subheading'>{comments.length} Comments</Typography>
+        <Typography>{comments.length} Comments</Typography>
         <Button>Sort By</Button>
       </InputCommentRow>
       <InputCommentRow>
@@ -111,7 +111,7 @@ const VideoComment = ({
                   <Typography variant='body2'>{c.postedBy.username}</Typography>&nbsp;&nbsp;
                   <Typography variant='caption'>{timeDifferenceForDate(c.createdOn)}</Typography>
                 </FlexRow>
-                <Typography variant='subheading'>{c.text}</Typography>
+                <Typography>{c.text}</Typography>
               </FlexCol>
             </FlexRow>
             <CommentStats>
@@ -161,11 +161,11 @@ const VideoComment = ({
                     </FlexRow>
                     <CommentStats>
                       <IconButtonStyled>
-                        <ThumbsUpIcon fontSize='small' />&nbsp;
+                        <ThumbsUpIcon fontSize='small'/>&nbsp;
                         <Typography type='button'>{sc.likes}</Typography>
                       </IconButtonStyled>
                       <IconButtonStyled>
-                        <ThumbsDownIcon fontSize='small' />&nbsp;
+                        <ThumbsDownIcon fontSize='small'/>&nbsp;
                         <Typography type='button'>{sc.dislikes}</Typography>
                       </IconButtonStyled>
                     </CommentStats>

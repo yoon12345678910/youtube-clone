@@ -62,7 +62,7 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingRight: '20px',
-    width: '13vw'
+    width: '200px'
   },
   link: {
     textDecoration: 'none',

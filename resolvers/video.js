@@ -9,7 +9,7 @@ module.exports = {
           { path: 'owner', model: 'user' },
           { path: 'comments', model: 'comment', populate: [
               { path: 'postedBy', model: 'user' },
-              { path: 'subComments', model: 'comment', populate: { path: 'postedBy', model: 'user' }}
+              { path: 'subComments', model: 'comment', populate: { path: 'postedBy', model: 'user' } }
             ], options: { sort: { 'createdOn': -1 } }
           }
         ])
