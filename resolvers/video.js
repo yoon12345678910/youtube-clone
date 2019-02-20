@@ -5,10 +5,16 @@ module.exports = {
 
     getVideoById: async (_, { videoId }, { models }) => {
       return await models.Video.findById(videoId)
-        .populate('owner')
+        .populate([
+          { path: 'owner', model: 'user' },
+          { path: 'comments', model: 'comment', populate: [
+              { path: 'postedBy', model: 'user' },
+              { path: 'subComments', model: 'comment', populate: { path: 'postedBy', model: 'user' }}
+            ], options: { sort: { 'createdOn': -1 } }
+          }
+        ])
         .exec();
     }
-
   },
   Mutation: {
 

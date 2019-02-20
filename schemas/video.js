@@ -10,6 +10,7 @@ module.exports = `
     views: Int
     likes: Int
     dislikes: Int
+    comments: [Comment]
   }
 
   input VideoInput {

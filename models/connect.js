@@ -5,7 +5,7 @@ const URI = keys.mlabURI;
 const options = { useNewUrlParser: true };
 const callback = (err) => {
     if(err) return new Error(err);
-    console.log('SERVER CONNECTED TO MLAB');
+    console.log('SERVER CONNECTED TO mongoose');
 };
 
 mongoose.connect(URI, options, callback);

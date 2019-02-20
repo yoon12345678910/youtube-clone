@@ -10,9 +10,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import VideoMain from '../components/VideoMain';
 import VideoStats from '../components/VideoStats';
 import VideoInfo from '../components/VideoInfo';
+import VideoComment from '../components/VideoComment';
 import ShareModal from '../components/ShareModal';
 import EmbedModal from '../components/EmbedModal';
-import { timeDifferenceForDate } from '../utils';
+
 
 
 class Video extends Component {
@@ -23,7 +24,10 @@ class Video extends Component {
       shareDialogOpen: false,
       copySnackbarOpen: false,
       embedDialogOpen: false,
-      linkToShare: ''
+      linkToShare: '',
+      comment: '',
+      subComment: '',
+      visibleReplyInput: -1
     }
 
     this.ThumbsTimer = null;
@@ -35,11 +39,19 @@ class Video extends Component {
     this.handleEmbedModalOpen = this.handleEmbedModalOpen.bind(this);
     this.handleCopySnackbarOpen = this.handleCopySnackbarOpen.bind(this);
     this.handleCopySnackbarClose = this.handleCopySnackbarClose.bind(this);
+    this.handleChangeComment = this.handleChangeComment.bind(this);
+    this.handleResetComment = this.handleResetComment.bind(this);
+    this.handleCreateComment = this.handleCreateComment.bind(this);
+    this.handleCopySnackbarClose = this.handleCopySnackbarClose.bind(this);
+    this.handleChangeSubComment = this.handleChangeSubComment.bind(this);
+    this.handleResetSubComment = this.handleResetSubComment.bind(this);
+    this.handleCreateSubComment = this.handleCreateSubComment.bind(this);
+    this.handleVisibleReply = this.handleVisibleReply.bind(this);
   }
 
   componentDidMount() {
     this.handleAddView();
-    this.setState({ linkToShare: `http://localhost:3000/video/${this.props.match.params.videoId}`})
+    this.setState({ linkToShare: `http://localhost:3000/video/${this.props.match.params.videoId}` })
   }
 
   handleAddView = async () => {
@@ -49,7 +61,7 @@ class Video extends Component {
   handleThumbs = async (control) => {
     clearTimeout(this.ThumbsTimer);
 
-    this.ThumbsTimer = setTimeout( async () => {
+    this.ThumbsTimer = setTimeout(async () => {
       const { videoId } = this.props.match.params;
 
       if (control === 'like') {
@@ -75,17 +87,58 @@ class Video extends Component {
   handleCopy = () => this.setState({ copySnackbarOpen: true })
 
   handleShareModalOpen = () => this.setState({ shareDialogOpen: true })
-    
+
   handleShareModalClose = () => this.setState({ shareDialogOpen: false })
-  
+
   handleEmbedModalClose = () => this.setState({ embedDialogOpen: false })
-  
+
   handleEmbedModalOpen = () => this.setState({ embedDialogOpen: true, shareDialogOpen: false })
-  
+
   handleCopySnackbarOpen = () => this.setState({ copySnackbarOpen: true })
-  
+
   handleCopySnackbarClose = () => this.setState({ copySnackbarOpen: false })
-  
+
+  handleChangeComment = (e) => this.setState({ comment: e.target.value })
+
+  handleResetComment = () => this.setState({ comment: '' })
+
+  handleChangeSubComment = (e) => this.setState({ subComment: e.target.value })
+
+  handleResetSubComment = () => this.setState({ subComment: '',  visibleReplyInput: -1 })
+
+  handleVisibleReply = (i) => this.setState({ visibleReplyInput: i, subComment: '' })
+
+  handleCreateComment = async () => {
+    const text = this.state.comment;
+    const reply = true;
+    const { videoId } = this.props.match.params;
+
+    this.handleResetComment();
+    await this.props.createComment({
+      variables: { text, reply, videoId },
+      refetchQueries: [{
+        query: VIDEO_BY_ID,
+        variables: { videoId }
+      }]
+    });
+  }
+
+  handleCreateSubComment = async (commentId) => {
+    console.log('commentId', commentId);
+    const text = this.state.subComment;
+    const reply = false;
+    const { videoId } = this.props.match.params;
+
+    this.handleResetSubComment();
+    await this.props.createSubComment({
+      variables: { text, reply, commentId },
+      refetchQueries: [{
+        query: VIDEO_BY_ID,
+        variables: { videoId }
+      }]
+    });
+  }
+
   render() {
     const { data: { getVideoById, loading, error } } = this.props;
 
@@ -96,23 +149,27 @@ class Video extends Component {
       title,
       description,
       url,
-      createdOn,
       views,
       likes,
       dislikes,
       owner: {
         username,
         imageUrl
-      }
+      },
+      comments,
+      createdOn
     } = getVideoById;
+
     const {
+      comment,
       shareDialogOpen,
       copySnackbarOpen,
       embedDialogOpen,
       linkToShare,
+      subComment,
+      visibleReplyInput
     } = this.state;
-    const posted = timeDifferenceForDate(createdOn);
-
+    console.log('comments', comments);
     return (
       <Fragment>
         <VideoMain
@@ -123,21 +180,35 @@ class Video extends Component {
               views={views}
               likes={likes}
               dislikes={dislikes}
-              onThumbLike={() => {this.handleThumbs('like')}}
-              onThumbDislike={() => {this.handleThumbs('dislike')}}
+              onThumbLike={() => { this.handleThumbs('like') }}
+              onThumbDislike={() => { this.handleThumbs('dislike') }}
               onShareModalOpen={this.handleShareModalOpen}
             />
             <Divider />
             <VideoInfo
               imageUrl={imageUrl}
               username={username}
-              Posted={posted}
+              Posted={createdOn}
               description={description}
             />
             <Divider />
+            <VideoComment
+              imageUrl={imageUrl}
+              comment={comment}
+              comments={comments}
+              onChangeComment={this.handleChangeComment}
+              onResetComment={this.handleResetComment}
+              onCreateComment={this.handleCreateComment}
+              subComment={subComment}
+              visibleReplyInput={visibleReplyInput}
+              onVisibleReply={this.handleVisibleReply}
+              onChangeSubComment={this.handleChangeSubComment}
+              onResetSubComment={this.handleResetSubComment}
+              onCreateSubComment={this.handleCreateSubComment}
+            />
           </Fragment>
         </VideoMain>
-        <ShareModal     
+        <ShareModal
           key='video-share-modal'
           innerRef={this.linkTextRef}
           title={title}
@@ -145,7 +216,7 @@ class Video extends Component {
           onEmbedModalOpen={this.handleEmbedModalOpen}
           onShareModalClose={this.handleShareModalClose}
           linkToShare={linkToShare}
-          onCopy={() => {this.handleCopy('share')}}
+          onCopy={() => { this.handleCopy('share') }}
         />
         <EmbedModal
           key='video-embed-modal'
@@ -153,7 +224,7 @@ class Video extends Component {
           open={embedDialogOpen}
           onEmbedModalClose={this.handleEmbedModalClose}
           url={url}
-          onCopy={() => {this.handleCopy('embed')}}
+          onCopy={() => { this.handleCopy('embed') }}
         />
         <Snackbar
           key='video-copy-snackbar'
@@ -162,7 +233,7 @@ class Video extends Component {
           autoHideDuration={8000}
           onClose={this.handleCopySnackbarClose}
           message={<span>Video link copied to clipboard</span>}
-          action={<IconButton onClick={this.handleCopySnackbarClose} color='inherit'><CloseIcon/></IconButton>}
+          action={<IconButton onClick={this.handleCopySnackbarClose} color='inherit'><CloseIcon /></IconButton>}
         />
       </Fragment>
     );
@@ -182,8 +253,28 @@ const VIDEO_BY_ID = gql`
       owner {
         username
         imageUrl
+      }
+      comments {
+        id,
+        text
+        reply
         likes
         dislikes
+        createdOn
+        postedBy {
+          username
+          imageUrl
+        }
+        subComments {
+          text
+          likes
+          dislikes
+          createdOn
+          postedBy {
+            username
+            imageUrl
+          }
+        }
       }
     }
   }
@@ -213,10 +304,28 @@ const ADD_DISLIKE = gql`
   }
 `;
 
+const CREATE_COMMENT = gql`
+  mutation ($text: String!, $reply: Boolean!, $videoId: ID!) {
+    createComment(text: $text, reply: $reply, videoId: $videoId) {
+      id
+    }
+  }
+`
+
+const CREATE_SUBCOMMENT = gql`
+  mutation ($text: String!, $reply: Boolean!, $commentId: ID!) {
+    createSubComment(text: $text, reply: $reply, commentId: $commentId) {
+      id
+    }
+  }
+`
+
 
 export default compose(
   graphql(ADD_VIEW, { name: 'addView' }),
   graphql(ADD_LIKE, { name: 'addLike' }),
   graphql(ADD_DISLIKE, { name: 'addDislike' }),
-  graphql(VIDEO_BY_ID, { options: props => ({ variables: { videoId: props.match.params.videoId }})})
+  graphql(CREATE_COMMENT, { name: 'createComment' }),
+  graphql(CREATE_SUBCOMMENT, { name: 'createSubComment' }),
+  graphql(VIDEO_BY_ID, { options: props => ({ variables: { videoId: props.match.params.videoId } }) })
 )(Video);

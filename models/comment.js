@@ -2,41 +2,37 @@ const mongoose = require('mongoose');
 
 const { Schema }  = mongoose;
 
-const videoSchema = new Schema({
+const commentSchema = new Schema({
 
-  url: String,
-
-  posterUrl: String,
-
-  title: String,
-
-  description: String,
-
-  views: {
-    type: Number,
-    default: 0
-  },
-
+  text: String,
+    
+  reply: Boolean,
+  
   likes: {
     type: Number,
     default: 0
   },
-
+  
   dislikes: {
     type: Number,
     default: 0
   },
-
-  owner: {
+  
+  postedBy: {
     type: Schema.Types.ObjectId,
     ref: 'user'
   },
+  
+  postedAbout: {
+    type: Schema.Types.ObjectId,
+    ref: 'video'
+  },
 
-  comments: {
+  subComments: {
     type: [Schema.Types.ObjectId],
     ref: 'comment'
   },
-
+  
   createdOn: {
     type: Date,
     default: Date.now()
@@ -44,4 +40,4 @@ const videoSchema = new Schema({
   
 });
 
-module.exports = mongoose.model('video', videoSchema);
+module.exports = mongoose.model('comment', commentSchema);
