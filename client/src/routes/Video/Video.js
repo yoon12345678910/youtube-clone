@@ -15,7 +15,6 @@ import ShareModal from '../components/ShareModal';
 import EmbedModal from '../components/EmbedModal';
 
 
-
 class Video extends Component {
   constructor() {
     super();
@@ -318,7 +317,6 @@ const CREATE_SUBCOMMENT = gql`
     }
   }
 `;
-
 
 export default compose(
   graphql(ADD_VIEW, { name: 'addView' }),

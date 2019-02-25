@@ -75,7 +75,7 @@ const AppTabs = ({
   onTabs,
   onSearchMode,
   onSearchString,
-  onOpenSettingsModal
+  onOpenSettings
 }) => {
   return (
     <AppBarStyled position='static'>
@@ -89,7 +89,7 @@ const AppTabs = ({
         <div>
           <Button variant='contained'>Customize Channel</Button>
           <ButtonStyled variant='contained'>Creator Studio</ButtonStyled>
-          <IconButton onClick={onOpenSettingsModal}>
+          <IconButton onClick={onOpenSettings}>
             <SettingsIcon/>
           </IconButton>
         </div>
@@ -119,7 +119,7 @@ AppTabs.defaultProps = {
   onTabs: () => console.warn('onTabs not defined'),
   onSearchMode: () => console.warn('onSearchMode not defined'),
   onSearchString: () => console.warn('onSearchString not defined'),
-  onOpenSettingsModal: () => console.warn('onOpenSettingsModal not defined')
+  onOpenSettings: () => console.warn('onOpenSettings not defined')
 }
 
 AppTabs.propTypes = {
@@ -131,7 +131,7 @@ AppTabs.propTypes = {
   onTabs: PropTypes.func,
   onSearchMode: PropTypes.func,
   onSearchString: PropTypes.func,
-  onOpenSettingsModal: PropTypes.func
+  onOpenSettings: PropTypes.func
 }
 
 export default AppTabs;

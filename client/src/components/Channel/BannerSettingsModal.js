@@ -25,17 +25,18 @@ const renderRadioButtons = () => positions.map((p, i) => (
   <FormControlLabel key={i} value={p.value} control={<Radio/>} label={p.label}/>
 ));
 
-const SettingsModal = ({
+const BannerSettingsModal = ({
   open,
   bannerPosition,
-  onSaveBannerPosition,
-  onSetBannerPosition,
-  onCloseSettingsModal
+  onSave,
+  onChange,
+  onClose
 }) => {
+
   return (
     <Dialog
       open={open}
-      onClose={onCloseSettingsModal}
+      onClose={onClose}
       fullWidth >
       <DialogTitle>Banner Position</DialogTitle>
       <DialogContent>
@@ -43,16 +44,16 @@ const SettingsModal = ({
           <FormLabel>Banner Vertical Position</FormLabel>
           <RadioGroup
             value={bannerPosition}
-            onChange={onSetBannerPosition}>
+            onChange={onChange}>
             {renderRadioButtons()}
           </RadioGroup>
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCloseSettingsModal}>Cancel</Button>
+        <Button onClick={onClose}>Cancel</Button>
         <Button
           color='primary'
-          onClick={onSaveBannerPosition}>
+          onClick={onSave}>
           Set Position
         </Button>
       </DialogActions>
@@ -60,20 +61,20 @@ const SettingsModal = ({
   )
 }
 
-SettingsModal.defaultProps = {
+BannerSettingsModal.defaultProps = {
   open: false,
   bannerPosition: '',
-  onSaveBannerPosition: () => console.warn('onSaveBannerPosition not defined'),
-  onSetBannerPosition: () => console.warn('onSetBannerPosition not defined'),
-  onCloseSettingsModal: () => console.warn('onCloseSettingsModal not defined')
+  onSave: () => console.warn('onSave not defined'),
+  onChange: () => console.warn('onChange not defined'),
+  onClose: () => console.warn('onClose not defined')
 }
 
-SettingsModal.propTypes = {
+BannerSettingsModal.propTypes = {
   open: PropTypes.bool,
   bannerPosition: PropTypes.string,
-  onSaveBannerPosition: PropTypes.func,
-  onSetBannerPosition: PropTypes.func,
-  onCloseSettingsModal: PropTypes.func
+  onSave: PropTypes.func,
+  onChange: PropTypes.func,
+  onClose: PropTypes.func
 }
 
-export default SettingsModal;
+export default BannerSettingsModal;

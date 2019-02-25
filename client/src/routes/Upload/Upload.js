@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { graphql, compose } from 'react-apollo';
+import { withApollo, graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import axios from 'axios';
 
@@ -125,7 +125,7 @@ class Upload extends Component {
       description,
       posterUrl
     } = this.state;
-
+    console.log('????', this.props.client);
     return (
       dropzone ? 
         <UploadDropzone
@@ -164,6 +164,7 @@ const CREATE_VIDEO = gql`
 `;
 
 export default compose(
+  withApollo,
   graphql(S3_SIGN_VIDEO, { name: 's3SignVideo' }),
   graphql(CREATE_VIDEO, { name: 'createVideo' })
 )(Upload);

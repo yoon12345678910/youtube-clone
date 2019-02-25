@@ -36,45 +36,54 @@ const VideoInfo = styled.div`
   text-align: left;
 `;
 
+const sortControl = (videos, sort) => {
+  if (sort === 'newest') return videos.reverse();
+  else if (sort === 'oldest') return videos;
+  else if (sort === 'popular') {
+    return videos.sort((a, b) => b.views - a.views);
+  }
+};
 
 const renderDescription = description => {
   if (description.length < 200) return description;
   return description.slice(0, 195) + '...';
-}
+};
 
 const Videos = ({
-  sortBy,
-  videoList,
-  sortMenu,
+  sort,
+  filter,
+  isShowSort,
   videos,
-  onSortBy,
-  onChangeVideoList,
-  onOpenSortMenu,
-  onCloseSortMenu
+  onChangeSort,
+  onChangeFilter,
+  onOpenSort,
+  onCloseSort
 }) => {
+  const sortedVideos = sortControl(videos.slice(), sort);
+
   return (
     <div>
       <Wrapper>
         <FormControl>
           <Select
-            value={videoList}
-            onChange={onChangeVideoList}>
+            value={filter}
+            onChange={onChangeFilter}>
             <MenuItem value='upload'>Uploads</MenuItem>
             <MenuItem value='liked'>Liked Videos</MenuItem>
             <MenuItem value='all'>All Videos</MenuItem>
           </Select>
         </FormControl>
-        <Button id='sort' onClick={onOpenSortMenu}><SortIcon />&nbsp; Sort By</Button>
+        <Button id='sort' onClick={onOpenSort}><SortIcon />&nbsp; Sort By</Button>
         <Menu
-          open={sortMenu}
           anchorEl={document.getElementById('sort')}
-          onClose={onCloseSortMenu}>
-          <MenuItem onClick={() => onSortBy('popular')}>Most Popular</MenuItem>
-          <MenuItem onClick={() => onSortBy('oldest')}>Date Added(oldest)</MenuItem>
-          <MenuItem onClick={() => onSortBy('newest')}>Date Added(newest)</MenuItem>
+          open={isShowSort}
+          onClose={onCloseSort}>
+          <MenuItem onClick={() => onChangeSort('popular')}>Most Popular</MenuItem>
+          <MenuItem onClick={() => onChangeSort('oldest')}>Date Added(oldest)</MenuItem>
+          <MenuItem onClick={() => onChangeSort('newest')}>Date Added(newest)</MenuItem>
         </Menu>
       </Wrapper>
-      {videos && videos.map((v, i) => {
+      {sortedVideos && sortedVideos.map((v, i) => {
         return (
           <div key={`video-${i}`}>
             <Grid>
@@ -99,20 +108,20 @@ const Videos = ({
 
 
 Videos.defaultProps = {
-  sortBy: 'newest',
-  videoList: 'upload',
-  sortMenu: false,
+  sort: 'newest',
+  filter: 'upload',
+  isShowSort: false,
   videos: [],
-  onSortBy: () => console.warn('onSortBy not defined'),
-  onChangeVideoList: () => console.warn('onChangeVideoList not defined'),
-  onOpenSortMenu: () => console.warn('onOpenSortMenu not defined'),
-  onCloseSortMenu: () => console.warn('onCloseSortMenu not defined')
+  onChangeSort: () => console.warn('onChangeSort not defined'),
+  onChangeFilter: () => console.warn('onChangeFilter not defined'),
+  onOpenSort: () => console.warn('onOpenSort not defined'),
+  onCloseSort: () => console.warn('onCloseSort not defined')
 }
 
 Videos.propTypes = {
-  sortBy: PropTypes.string,
-  videoList: PropTypes.string,
-  sortMenu: PropTypes.bool,
+  sort: PropTypes.string,
+  filter: PropTypes.string,
+  isShowSort: PropTypes.bool,
   videos: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     posterUrl: PropTypes.string,
@@ -121,10 +130,10 @@ Videos.propTypes = {
     views: PropTypes.number,
     createdOn: PropTypes.string
   })),
-  onSortBy: PropTypes.func,
-  onChangeVideoList: PropTypes.func,
-  onOpenSortMenu: PropTypes.func,
-  onCloseSortMenu: PropTypes.func,
+  onChangeSort: PropTypes.func,
+  onChangeFilter: PropTypes.func,
+  onOpenSort: PropTypes.func,
+  onCloseSort: PropTypes.func,
 }
 
 export default Videos;

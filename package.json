@@ -12,6 +12,8 @@
     "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
+    "apollo-link": "^1.2.8",
+    "apollo-link-state": "^0.4.2",
     "apollo-server-express": "^2.4.0",
     "aws-sdk": "^2.403.0",
     "concurrently": "^4.1.0",

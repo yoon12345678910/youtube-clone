@@ -38,6 +38,7 @@ module.exports = {
     addBanner: async (_, { bannerUrl }, { models, user }) => {
       const currentUser = await models.User.findById(user.id);
       currentUser.bannerUrl = bannerUrl;
+      currentUser.bannerPosition = '50%';
       await currentUser.save();
       return currentUser;
     },
