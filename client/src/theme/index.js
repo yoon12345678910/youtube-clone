@@ -26,6 +26,11 @@ export default createMuiTheme({
     divider: '#707070'
   },
   overrides: {
+    MuiInput: {
+      underline: {
+        borderBottom: '1px solid #DDDDDD;'
+      }
+    },
     MuiButton: {
       root: {
         '&:hover': {
@@ -54,13 +59,8 @@ export default createMuiTheme({
         color: '#DDDDDD'
       }
     },
-    // MuiTypography: {
-    //   root: {
-    //     color: '#444',
-    //   }
-    // }
   },
   typography: {
     useNextVariants: true,
   }
-})
+});

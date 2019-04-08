@@ -1,32 +1,5 @@
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
 import moment from 'moment';
-import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
 
-
-const IS_LOGGED_IN = gql`
-  query IsUserLoggedIn {
-    isLoggedIn @client
-  }
-`;
-
-export const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Query query={IS_LOGGED_IN}>
-    {({ data }) => (
-      <Route {...rest} render={props => (
-        data.isLoggedIn ? (
-          <Component {...props}/>
-        ) : (
-          <Redirect to={{
-            pathname: '/',
-            state: { from: props.location }
-          }}/>
-        )
-      )}/>
-    )}
-  </Query>
-);
 
 function timeDifference(current, previous) {
   const milliSecondsPerMinute = 60 * 1000;
@@ -72,39 +45,11 @@ export function timeDifferenceForDate(date) {
   return timeDifference(now, updated);
 };
 
-export const reverseFormat = string => {
-  const array = string.split(':');
-  if (array.length === 3) {
-    return (
-      parseInt(array[0], 10) * 3600 +
-      parseInt(array[1], 10) * 60 +
-      parseInt(array[2], 10)
-    )
-  }
-  if (array.length === 2)
-    return parseInt(array[0], 10) * 60 + parseInt(array[1], 10);
-};
-
-export const formatTime = secs => {
-  const formatted = moment.utc(secs * 1000).format('H:mm:ss');
-  if (secs < 600) return formatted.slice(3);
-  if (secs < 3600) return formatted.slice(2);
-  return formatted;
-};
-
-export const setNewVideoTag = date => {
-  //const createdOn = moment(date)
-  const testDate = moment()
-    .subtract(2, 'weeks')
-    .utc()
-    .valueOf()
-  return date > testDate;
-};
-
 export const formatFilename = name => {
+  name = name.toLowerCase();
   const date = moment().format('M-DD-YYYY');
-  const cleanFilename = name
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '-');
-  return `${date}-${cleanFilename}`;
+  return {
+    title: name.split('.')[0].replace(/[^a-z0-9]/g, '_'),
+    uploadFileName: `${date}-${name.replace(/[^a-z0-9]/g, '-')}`
+  };
 };
